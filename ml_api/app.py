@@ -31,8 +31,18 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"],
 BASE = os.path.dirname(__file__)
 def _pkl(n):
     try:
-        with open(os.path.join(BASE,n),"rb") as f: return pickle.load(f)
-    except: return None
+        path = os.path.join(BASE, n)
+        
+        if not os.path.exists(path):
+            print(f"⚠️ File not found: {n}")
+            return None
+
+        with open(path, "rb") as f:
+            return pickle.load(f)
+
+    except Exception as e:
+        print(f"⚠️ Error loading {n}: {e}")
+        return None
 
 rf_model  = _pkl("eeg_model.pkl");     rf_scaler = _pkl("eeg_scaler.pkl")
 rf_labels = _pkl("eeg_labels.pkl")
